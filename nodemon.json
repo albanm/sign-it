@@ -1,0 +1,8 @@
+{
+  "verbose": true,
+  "ext": "js json html svg",
+  "watch": [
+    "server/",
+    "config/"
+  ]
+}
