@@ -4,9 +4,9 @@
   "description": "Put your signature certified by an open id provider and stored on a public blockchain onto any document.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "rm -f data/contract-address.txt && mocha",
     "dev": "NODE_ENV=development webpack --watch & browser-sync start --config bs-config.js & NODE_ENV=development nodemon server/app.js",
-    "testrpc": "rm -f data/contract-address.txt && node server/testrpc.js"
+    "testrpc": "node server/testrpc.js"
   },
   "keywords": [
     "signature",

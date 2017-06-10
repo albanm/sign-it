@@ -62,7 +62,7 @@ exports.estimateGas = (idProvider, userId, docHash, cb) => {
 exports.sign = (idProvider, userId, docHash, cb) => {
   if (!currentContract) return cb(new Error('Account and contract were not properly initialized to work with the blockchain'))
 
-  const data = currentContract.sign.getData(idProvider, userId, docHash)
+  const data = currentContract.sign.getData(idProvider + userId, docHash)
   web3.eth.sendTransaction({
     data,
     to: currentContract.address,

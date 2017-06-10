@@ -43,7 +43,7 @@ describe('sign-it ethereum contract', () => {
   })
 
   it('should not be able to sign a document as anybody else', cb => {
-    const data = blockchain.currentContract.sign.getData('testProvider', 'testUser', 'hashhashash')
+    const data = blockchain.currentContract.sign.getData('testProvidertestUser', 'hashhashash')
     try {
       blockchain.web3.eth.estimateGas({ data, to: blockchain.currentContract.address, from: userAccount })
     } catch (err) {
