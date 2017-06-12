@@ -59,21 +59,42 @@ exports.estimateGas = (idProvider, userId, docHash, cb) => {
   cb(null, web3.eth.estimateGas({ data, to: currentContract.address }))
 }
 
+exports.transact = (data, from, cb) => {
+  if (typeof from === 'function') {
+    cb = from
+    from = null
+  }
+  try {
+    web3.eth.sendTransaction({
+      data,
+      to: currentContract.address,
+      from,
+      gas: web3.eth.estimateGas({ data, to: currentContract.address, from })
+    }, (err, result) => {
+      if (err) return cb(err)
+      web3.eth.getTransactionReceipt(result, cb)
+    })
+  } catch (err) {
+    cb(err)
+  }
+}
+
 exports.sign = (idProvider, userId, docHash, cb) => {
   if (!currentContract) return cb(new Error('Account and contract were not properly initialized to work with the blockchain'))
-
   const data = currentContract.sign.getData(idProvider + userId, docHash)
-  web3.eth.sendTransaction({
-    data,
-    to: currentContract.address,
-    gas: web3.eth.estimateGas({ data, to: currentContract.address })
-  }, (err, result) => {
-    if (err) return cb(err)
-    web3.eth.getTransactionReceipt(result, (err, receipt) => {
-      if (err) return cb(err)
-      cb(null, receipt)
-    })
-  })
+  exports.transact(data, cb)
+}
+
+exports.registerUserId = (idProvider, userId, firstName, familyName, birthPlace, birthDate, secret, cb) => {
+  if (!currentContract) return cb(new Error('Account and contract were not properly initialized to work with the blockchain'))
+  const data = currentContract.registerUserId.getData(idProvider + userId, idProvider, userId, firstName, familyName, birthPlace, birthDate, secret)
+  exports.transact(data, cb)
+}
+
+exports.validateUserId = (idProvider, userId, secret, cb) => {
+  if (!currentContract) return cb(new Error('Account and contract were not properly initialized to work with the blockchain'))
+  const data = currentContract.validateUserId.getData(idProvider + userId, secret)
+  exports.transact(data, cb)
 }
 
 function getAccount(cb) {

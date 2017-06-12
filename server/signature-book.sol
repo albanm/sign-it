@@ -5,6 +5,7 @@ contract SignatureBook {
 
   // Utility stuff
   event log(string msg);
+  event logBytes32(bytes32 msg);
   function toString(address x) returns (string) {
     bytes memory b = new bytes(20);
     for (uint i = 0; i < 20; i++)
@@ -81,9 +82,8 @@ contract SignatureBook {
 
   // Actually sign a document
   function sign(bytes32 fullUserId, bytes32 docHash) {
-    // Only the book keeper writes signatures
-    // TODO : also accept the confirmed user
-    require(msg.sender == bookKeeper);
+    UserIdData userIdData = userIds[fullUserId];
+    require(msg.sender == bookKeeper || msg.sender == userIdData.owner);
 
     signatures.push(Signature({
       fullUserId: fullUserId,

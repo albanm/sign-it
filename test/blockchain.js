@@ -11,11 +11,12 @@ describe('sign-it ethereum contract', () => {
         if (err) return cb(err)
         userAccount = accounts[1]
         console.log('Test Account: ' + userAccount)
-        const logEvent = blockchain.currentContract.log()
-        logEvent.watch((err, event) => {
+        const logCallback = (err, event) => {
           if (err) throw (err)
           console.log('contract log : ' + event.args.msg)
-        })
+        }
+        blockchain.currentContract.log().watch(logCallback)
+        blockchain.currentContract.logBytes32().watch(logCallback)
         cb()
       })
     })
@@ -44,31 +45,54 @@ describe('sign-it ethereum contract', () => {
 
   it('should not be able to sign a document as anybody else', cb => {
     const data = blockchain.currentContract.sign.getData('testProvidertestUser', 'hashhashash')
-    try {
-      blockchain.web3.eth.estimateGas({ data, to: blockchain.currentContract.address, from: userAccount })
-    } catch (err) {
-      // console.log(err)
+    blockchain.transact(data, userAccount, err => {
+      assert.ok(err)
       cb()
-    }
-    throw new Error('should have failed')
+    })
   })
 
-  /* it('should be able to sign a document as a known user', cb => {
-    const data = blockchain.currentContract.sign.getData('testProvider', 'testUser', 'hashhashash')
-    console.log(userAccount)
-    blockchain.web3.eth.sendTransaction({
-      data,
-      from: userAccount,
-      to: blockchain.currentContract.address,
-      gas: blockchain.web3.eth.estimateGas({ data, to: blockchain.currentContract.address })
-    }, (err, result) => {
+  it('should register then validate a user\'s identity', cb => {
+    blockchain.registerUserId('testProvider', 'testUser', 'Alban', 'Mouton', 'Rennes', '28-11-1983', 'testSecret', (err, receipt) => {
       if (err) return cb(err)
-      blockchain.web3.eth.getTransactionReceipt(result, (err, receipt) => {
+      assert.ok(receipt.logs)
+
+      blockchain.validateUserId('testProvider', 'testUser', 'testSecret', (err, receipt) => {
         if (err) return cb(err)
         assert.ok(receipt.logs)
-        console.log(receipt)
-        cb(null)
+        cb()
       })
     })
-  }) */
+  })
+
+  it('should not be able to a user\'s identity without the right secret', cb => {
+    blockchain.registerUserId('testProvider2', 'testUser2', 'Alban', 'Mouton', 'Rennes', '28-11-1983', 'testSecret', (err, receipt) => {
+      if (err) return cb(err)
+      assert.ok(receipt.logs)
+
+      blockchain.validateUserId('testProvider2', 'testUser2', 'BADSECRET', (err, receipt) => {
+        assert.ok(err)
+        cb()
+      })
+    })
+  })
+
+  it('should be able to sign a document as a known user', cb => {
+    blockchain.registerUserId('testProvider3', 'testUser3', 'Alban', 'Mouton', 'Rennes', '28-11-1983', 'testSecret', (err, receipt) => {
+      if (err) return cb(err)
+      assert.ok(receipt.logs)
+
+      const data = blockchain.currentContract.validateUserId.getData('testProvider3testUser3', 'testSecret')
+      blockchain.transact(data, userAccount, (err, receipt) => {
+        if (err) return cb(err)
+        assert.ok(receipt.logs)
+
+        const data = blockchain.currentContract.sign.getData('testProvider3testUser3', 'hashhashash')
+        blockchain.transact(data, userAccount, (err, receipt) => {
+          if (err) return cb(err)
+          assert.ok(receipt.logs)
+          cb()
+        })
+      })
+    })
+  })
 })
