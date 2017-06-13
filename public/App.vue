@@ -8,37 +8,29 @@
       <h2 class="md-title" style="flex: 1">Sign it !</h2>
     </md-toolbar>
     <div>
-      <md-input-container>
-        <label>Select a file (it will not be uploaded anywhere)</label>
-        <md-file @change.native="onFileChange"></md-file>
-      </md-input-container>
-      {{fileHash}}
+      {{blockchainReady}}
     </div>
   </div>
 </template>
 
 <script>
-const md5 = require('blueimp-md5')
-
+const blockchainCommon = require('../blockchain')
 export default {
   data() {
-    return {
-      file: null,
-      fileHash: null
-    }
+    return { blockchainReady: false }
   },
-  watch: {
-    file() {
-      if (!this.file) return
-      var reader = new FileReader()
-      reader.onload = e => { this.fileHash = md5(e.target.result) }
-      reader.readAsBinaryString(this.file)
-    }
-  },
-  methods: {
-    onFileChange(e) {
-      this.file = (e.target.files || e.dataTransfer.files)[0]
-    }
+  mounted() {
+    // TODO error display
+    this.$http.get('/api/v1/contract').then(res => {
+      if (!res.body.source || !res.body.address) {
+        console.log('Missing contract info, should not be possible');
+        return
+      }
+      blockchainCommon.init(res.body.source, res.body.address, err => {
+        if (err) throw err
+        this.blockchainReady = true
+      })
+    })
   }
 }
 </script>

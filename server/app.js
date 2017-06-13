@@ -2,8 +2,13 @@ const config = require('config')
 const express = require('express')
 const path = require('path')
 
+const blockchain = require('./blockchain')
+
 let app = module.exports = express()
 if (process.env.NODE_ENV === 'development') app.set('json spaces', 2)
+
+// API routing
+app.get('/api/v1/contract', (req, res) => res.send({ source: blockchain.source, address: blockchain.address }))
 
 // Static routing
 const oneWeek = 7 * 24 * 60 * 60
@@ -21,12 +26,18 @@ app.use('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'))
 })
 
-app.listen(config.port, (err) => {
+blockchain.init(err => {
   if (err) {
-    console.error('Could not run server : ', err.stack)
+    console.error('Could not init blockchain client : ', err.stack)
     throw err
   }
-  console.log('Listening on http://localhost:%s', config.port)
-    // Emit this event for the test suite
-  app.emit('listening')
+  app.listen(config.port, (err) => {
+    if (err) {
+      console.error('Could not run server : ', err.stack)
+      throw err
+    }
+    console.log('Listening on http://localhost:%s', config.port)
+      // Emit this event for the test suite
+    app.emit('listening')
+  })
 })
