@@ -1,28 +1,20 @@
-const solc = require('solc')
-
 const Web3 = require('web3')
 const web3 = exports.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 
 let currentContract
-exports.init = (source, address, cb) => {
+exports.init = (inputContract, cb) => {
   getAccount((err, account) => {
     if (err) return cb(err)
+    const MyContract = web3.eth.contract(inputContract.abi)
     web3.eth.defaultAccount = account
-
-    const compiledContract = solc.compile(source, 1)
-    if (compiledContract.errors && compiledContract.errors.length) throw new Error(JSON.stringify(compiledContract.errors))
-    const abi = compiledContract.contracts[':SignatureBook'].interface
-    const bytecode = compiledContract.contracts[':SignatureBook'].bytecode
-    const MyContract = web3.eth.contract(JSON.parse(abi))
-
-    if (address) {
-      MyContract.at(address, (err, contract) => {
+    if (inputContract.address) {
+      MyContract.at(inputContract.address, (err, contract) => {
         if (err) return cb(err)
         currentContract = exports.currentContract = contract
         cb(null, currentContract)
       })
     } else {
-      newContract(account, MyContract, bytecode, (err, contract) => {
+      newContract(account, MyContract, inputContract.bytecode, (err, contract) => {
         if (err) return cb(err)
         currentContract = exports.currentContract = contract
         cb(null, currentContract)

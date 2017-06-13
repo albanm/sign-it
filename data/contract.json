@@ -1,0 +1,208 @@
+{
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "x",
+          "type": "address"
+        }
+      ],
+      "name": "toString",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "fullUserId",
+          "type": "bytes32"
+        },
+        {
+          "name": "docHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "sign",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "signatures",
+      "outputs": [
+        {
+          "name": "fullUserId",
+          "type": "bytes32"
+        },
+        {
+          "name": "docHash",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "fullUserId",
+          "type": "bytes32"
+        },
+        {
+          "name": "idProvider",
+          "type": "bytes16"
+        },
+        {
+          "name": "userId",
+          "type": "bytes16"
+        },
+        {
+          "name": "firstName",
+          "type": "bytes32"
+        },
+        {
+          "name": "familyName",
+          "type": "bytes32"
+        },
+        {
+          "name": "birthPlace",
+          "type": "bytes32"
+        },
+        {
+          "name": "birthDate",
+          "type": "bytes10"
+        },
+        {
+          "name": "secret",
+          "type": "bytes32"
+        }
+      ],
+      "name": "registerUserId",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "bookKeeper",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "userIds",
+      "outputs": [
+        {
+          "name": "idProvider",
+          "type": "bytes16"
+        },
+        {
+          "name": "userId",
+          "type": "bytes16"
+        },
+        {
+          "name": "firstName",
+          "type": "bytes32"
+        },
+        {
+          "name": "familyName",
+          "type": "bytes32"
+        },
+        {
+          "name": "birthPlace",
+          "type": "bytes32"
+        },
+        {
+          "name": "birthDate",
+          "type": "bytes10"
+        },
+        {
+          "name": "secretHash",
+          "type": "bytes32"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "fullUserId",
+          "type": "bytes32"
+        },
+        {
+          "name": "secret",
+          "type": "bytes32"
+        }
+      ],
+      "name": "validateUserId",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "msg",
+          "type": "string"
+        }
+      ],
+      "name": "log",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "msg",
+          "type": "bytes32"
+        }
+      ],
+      "name": "logBytes32",
+      "type": "event"
+    }
+  ],
+  "address": "0x77588ff9eb47d1334a9900cf43506a0badb0d11f"
+}

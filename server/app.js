@@ -8,7 +8,7 @@ let app = module.exports = express()
 if (process.env.NODE_ENV === 'development') app.set('json spaces', 2)
 
 // API routing
-app.get('/api/v1/contract', (req, res) => res.send({ source: blockchain.source, address: blockchain.address }))
+app.get('/api/v1/contract', (req, res) => res.send(blockchain.contract))
 
 // Static routing
 const oneWeek = 7 * 24 * 60 * 60

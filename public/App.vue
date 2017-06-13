@@ -22,11 +22,11 @@ export default {
   mounted() {
     // TODO error display
     this.$http.get('/api/v1/contract').then(res => {
-      if (!res.body.source || !res.body.address) {
+      if (!res.body.address) {
         console.log('Missing contract info, should not be possible');
         return
       }
-      blockchainCommon.init(res.body.source, res.body.address, err => {
+      blockchainCommon.init(res.body, err => {
         if (err) throw err
         this.blockchainReady = true
       })
